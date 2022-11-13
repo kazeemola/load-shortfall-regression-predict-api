@@ -12,21 +12,25 @@
 # Dependencies
 import pandas as pd
 import pickle
+import numpy as np
 from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestRegressor
 
 # Fetch training data and preprocess for modeling
 train = pd.read_csv('./data/df_train.csv')
 
 y_train = train[['load_shortfall_3h']]
-train[['Valencia_pressure']] = train[['Valencia_pressure']].fillna(0)
-X_train = train[['Madrid_wind_speed','Bilbao_rain_1h','Valencia_wind_speed','Valencia_pressure']]
+#train[['Valencia_pressure']] = train[['Valencia_pressure']].fillna(0, inplace=True)
+#X_train = train[['Madrid_wind_speed','Bilbao_rain_1h','Valencia_wind_speed','Valencia_pressure']]
+X_train = train.drop(['time','Valencia_wind_deg','Seville_pressure','Valencia_pressure'],axis=1)
+X_train.fillna(0,inplace=True)
 
 # Fit model
-model3 = LinearRegression(normalize=True)
+modelrf2 = RandomForestRegressor(max_depth=4, max_features='sqrt')
 print ("Training Model...")
-model3.fit(X_train, y_train)
+modelrf2.fit(X_train.drop('load_shortfall_3h',axis=1), np.ravel(y_train))
 
 # Pickle model for use within our API
-save_path = '../assets/trained-models/model3.pkl'
+save_path = '../assets/trained-models/modelrf2.pkl'
 print (f"Training completed. Saving model to: {save_path}")
-pickle.dump(model3, open(save_path,'wb'))
+pickle.dump(modelrf2, open(save_path,'wb'))
