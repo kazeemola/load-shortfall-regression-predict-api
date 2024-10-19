@@ -1,6 +1,6 @@
 """
 
-    Helper functions for the pretrained model to be used within our API.
+    Helper functions for the pretrained model to be used within Explore API.
 
     Author: Explore Data Science Academy.
 
